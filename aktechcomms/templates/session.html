@@ -1,0 +1,167 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>Flask_Chat_App</title>
+	<style>
+	body{
+	  background-color: #658fff;
+	}
+	.h3 {
+	  position: fixed;
+	  border-radius: 15px;
+	  border-style: none;
+
+	  left: 60%;
+	  bottom: 10px;
+	  transform: translate(-50%, -50%);
+	  margin: 0 auto;
+	  padding: 15px 700px 15px 10px;
+	  
+	  background-color: #f9f9f9;
+	}
+	p {
+	  color: red;
+	  font-family: courier;
+	  font-size: 160%;
+	}
+	.circleBase {
+	  position: absolute;
+      border-radius: 50%;
+
+    }
+	.type2 {
+		width: 50px;
+		height: 50px;
+		background: #ccc;
+		border: 3px solid #000;
+	}
+	.account{
+	    position: absolute;
+	    top: 80%;
+		width: 70px;
+		height: 55px;
+	    left: 50%;
+		border: 3px solid #000;
+	}
+	.container_img {
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+	} 
+	.chat_app{
+		position: fixed;
+		border-radius: 10px;
+        background-color: #ffffff;
+		left: 55%;
+		bottom: -280px;
+		transform: translate(-50%, -50%);
+		margin: 0 auto;
+		width: 1000px;
+		height: 650px;
+	}
+	.user_count{
+		position: fixed;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+		left: 24%;
+		bottom: -280px;
+		transform: translate(-50%, -50%);
+		margin: 0 auto;
+		width: 310px;
+		height: 650px;
+		z-index: -1;
+		font-family: Noticia Regular;
+		font-size: 20px;
+		text-align: center;
+	}
+	
+	.send{
+	    position: fixed;
+		border-radius: 50%;
+		background-image: url(send-button.png); 
+		background-color: transparent; 
+		background-repeat: no-repeat;  
+		background-position: 0px 0px;  
+		transform: translate(-50%, -50%);
+		margin: 0 auto;
+		left: 90%;
+		border: none;           
+		cursor: pointer;        
+		height: 24px;           
+		padding-left: 16px;     
+		vertical-align: middle; 
+		bottom: 20px;
+		text-indent: -99999px;
+	}
+		
+	</style>
+
+	
+  </head>
+  <body>
+
+
+	<!--<div class="account"> -->
+	    <!--<div class="circleBase type2"><img class="container_img" src="https://www.w3schools.com/howto/img_avatar2.png" /></div> -->
+	<!--</div> -->
+	     
+	<div class='chat_app'>
+		<form action="" method="POST" id="form">
+			<input id="msg" type="text" class="h3" placeholder="Messages"/>
+			<input class="send" type="submit"/>
+		</form>
+		<h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+        <div class="message_holder"></div>
+		
+	</div>
+	<div class='user_count' id="user_div">
+		
+		
+	</div>
+    
+    <h1 id="user">{{user}}</h1>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+      function var1() {
+		  document.getElementById('user_div').innerHTML = document.getElementById('user').innerHTML;
+	  }
+
+	  window.onload = var1;
+	  document.addEventListener("keypress", function(event) {
+		if (event.keyCode == 13) {
+		    socket.emit( 'my event', {
+				user_name : document.getElementById('user').innerHTML,
+				message : document.getElementById('msg').value
+            } )
+		}
+	  });
+	  
+      socket.on( 'connect', function() {
+        socket.emit( 'my event', {
+          data: document.getElementById('userinf').innerHTML = document.getElementById('user').innerHTML
+        } )
+        var form = $( 'form' ).on( 'submit', function( e ) {
+          e.preventDefault()
+          var user_name = document.getElementById('user').innerHTML;
+          var user_input = document.getElementById('msg').value
+          socket.emit( 'my event', {
+            user_name : user_name,
+            message : user_input
+          } )
+         
+        } )
+      } )
+      socket.on( 'my response', function( msg ) {
+        console.log( msg )
+        if( typeof msg.user_name !== 'undefined' ) {
+          $( 'h3' ).remove()
+          $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+        }
+      })
+    </script>
+
+  </body>
+  </html>
